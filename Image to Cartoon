@@ -1,0 +1,29 @@
+import cv2
+import numpy as np
+img=cv2.imread(r'C:\Users\Welcome\Desktop\data3.png')
+img_rgb=img
+num=2
+bilateral=7
+for x in range(num):
+    img_rgb=cv2.pyrDown(img_rgb)
+for x in range(bilateral):
+    img_rgb=cv2.bilateralFilter(img_rgb,d=9,sigmaColor=9,sigmaSpace=7)
+for x in range(num):
+    img_rgb=cv2.pyrUp(img_rgb)
+gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+blur = cv2.medianBlur(gray, 7)
+# print(blur.shape)
+thresh = cv2.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,9,2)
+# print(thresh.shape)
+thresh = cv2.cvtColor(thresh, cv2.COLOR_GRAY2RGB)
+# print(thresh.shape)
+# print(img_rgb.shape)
+(x,y,z) = img_rgb.shape 
+thresh = cv2.resize(thresh,(y,x))  
+# print(thresh.shape)
+
+cartoon = cv2.bitwise_and(img_rgb,thresh)
+cv2.imshow('orig',img)
+cv2.imshow('res',cartoon)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
